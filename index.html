@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猜測組合計算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>猜測組合計算器</h1>
+    <p>請依序輸入以下猜測組合的 A 的數量 (0 或 1)：</p>
+    <div id="inputs"></div>
+    <button id="calculate">計算可能的分配</button>
+    <h2>結果：</h2>
+    <pre id="output"></pre>
+
+    <script>
+        // 初始化猜測組合
+        const guesses = ["000", "100", "010", "001"];
+        const guessesACounts = {};
+        const inputsDiv = document.getElementById("inputs");
+        const outputPre = document.getElementById("output");
+
+        // 動態生成輸入欄位
+        guesses.forEach(guess => {
+            const label = document.createElement("label");
+            label.textContent = `猜測組合 ${guess} 的 A 的數量 (0 或 1): `;
+            const input = document.createElement("input");
+            input.type = "number";
+            input.min = "0";
+            input.max = "1";
+            input.id = `input-${guess}`;
+            inputsDiv.appendChild(label);
+            inputsDiv.appendChild(input);
+            inputsDiv.appendChild(document.createElement("br"));
+        });
+
+        // 計算可能的分配
+        document.getElementById("calculate").addEventListener("click", () => {
+            // 讀取輸入值
+            let validInput = true;
+            guesses.forEach(guess => {
+                const value = parseInt(document.getElementById(`input-${guess}`).value, 10);
+                if (isNaN(value) || value < 0 || value > 1) {
+                    validInput = false;
+                } else {
+                    guessesACounts[guess] = value;
+                }
+            });
+
+            if (!validInput) {
+                outputPre.textContent = "輸入錯誤，請確保所有輸入為 0 或 1。";
+                return;
+            }
+
+            // 計算可能的分配
+            const possibleDistributions = [];
+            for (let c1 = 0; c1 <= 4; c1++) {
+                for (let c2 = 0; c2 <= 4 - c1; c2++) {
+                    const c3 = 4 - c1 - c2;
+
+                    if (c3 >= 0 && c3 <= 4) {
+                        const actualDistribution = [c1, c2, c3];
+                        let allGuessesMatch = true;
+
+                        for (const [guess, aCount] of Object.entries(guessesACounts)) {
+                            let matchCount = 0;
+                            const guessC1 = parseInt(guess[0], 10);
+                            const guessC2 = parseInt(guess[1], 10);
+                            const guessC3 = parseInt(guess[2], 10);
+
+                            if (guessC1 === actualDistribution[0]) matchCount++;
+                            if (guessC2 === actualDistribution[1]) matchCount++;
+                            if (guessC3 === actualDistribution[2]) matchCount++;
+
+                            if (matchCount !== aCount) {
+                                allGuessesMatch = false;
+                                break;
+                            }
+                        }
+
+                        if (allGuessesMatch) {
+                            possibleDistributions.push(actualDistribution);
+                        }
+                    }
+                }
+            }
+
+            // 顯示結果
+            if (possibleDistributions.length > 0) {
+                outputPre.textContent = "可能的分配：\n" + possibleDistributions.map(d => `(${d.join(", ")})`).join("\n");
+            } else {
+                outputPre.textContent = "沒有符合條件的分配。";
+            }
+        });
+    </script>
+</body>
+</html>
