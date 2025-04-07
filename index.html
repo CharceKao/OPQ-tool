@@ -28,7 +28,7 @@
 </head>
 <body>
     <h1>猜測組合計算器</h1>
-    <p>請依序輸入以下猜測組合的 A 的數量 (0 或 1)：</p>
+    <p>請依序輸入以下猜測組合的 A 的數量 (0 - 2)：</p>
     <div id="inputs"></div>
     <button id="calculate">計算可能的分配</button>
     <h2>結果：</h2>
@@ -61,7 +61,7 @@
             let validInput = true;
             guesses.forEach(guess => {
                 const value = parseInt(document.getElementById(`input-${guess}`).value, 10);
-                if (isNaN(value) || value < 0 || value > 1) {
+                if (isNaN(value) || value < 0 || value > 2) {
                     validInput = false;
                 } else {
                     guessesACounts[guess] = value;
@@ -69,7 +69,7 @@
             });
 
             if (!validInput) {
-                outputPre.textContent = "輸入錯誤，請確保所有輸入為 0 或 1。";
+                outputPre.textContent = "輸入錯誤，請確保所有輸入為 0 - 1。";
                 return;
             }
 
