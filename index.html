@@ -44,7 +44,7 @@
         // 動態生成輸入欄位
         guesses.forEach(guess => {
             const label = document.createElement("label");
-            label.textContent = `猜測組合 ${guess} 的 A 的數量 (0 或 1): `;
+            label.textContent = `猜測組合 ${guess} 的 A 的數量 (0 或 2): `;
             const input = document.createElement("input");
             input.type = "number";
             input.min = "0";
@@ -69,7 +69,7 @@
             });
 
             if (!validInput) {
-                outputPre.textContent = "輸入錯誤，請確保所有輸入為 0 - 1。";
+                outputPre.textContent = "輸入錯誤，請確保所有輸入為 0 - 2。";
                 return;
             }
 
